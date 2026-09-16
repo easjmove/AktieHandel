@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AktieHandel/AktieHandel.csproj" />
+  <Project Path="AktieHandelLibrary/AktieHandelLibrary.csproj" />
+</Solution>

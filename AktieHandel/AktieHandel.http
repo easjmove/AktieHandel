@@ -1,0 +1,6 @@
+@AktieHandel_HostAddress = http://localhost:5105
+
+GET {{AktieHandel_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
