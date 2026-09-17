@@ -17,17 +17,34 @@ namespace AktieHandelApi.Controllers
             _repository = repository;
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public IEnumerable<AktieHandel> Get()
+        public ActionResult<IEnumerable<AktieHandel>> GetAll()
         {
-            return _repository.GetAll();
+            List<AktieHandel> aktieHandler = _repository.GetAll();
+            if (aktieHandler == null || aktieHandler.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(_repository.GetAll());
         }
 
         // GET api/<AktieHandelController>/5
         [HttpGet("{id}")]
-        public AktieHandel? Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<AktieHandel> GetById(int id)
         {
-            return _repository.GetById(id);
+            AktieHandel? aktieHandel = _repository.GetById(id);
+            if (aktieHandel == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(_repository.GetById(id));
+            }
         }
 
         // POST api/<AktieHandelController>

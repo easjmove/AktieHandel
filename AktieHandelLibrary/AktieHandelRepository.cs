@@ -6,15 +6,15 @@ namespace AktieHandelLibrary
 {
     public class AktieHandelRepository
     {
-        private int _nextId = 0;
+        private int _nextId = 1;
         private List<AktieHandel> handler = new List<AktieHandel>();        
 
         public AktieHandelRepository()
         {
-            handler.Add(new AktieHandel() { Navn = "Aktie1", HandelsPris=5, Antal = 1 });
-            handler.Add(new AktieHandel() { Navn = "Aktie2", HandelsPris = 4.7, Antal = 3 });
-            handler.Add(new AktieHandel() { Navn = "Aktie3", HandelsPris = 1, Antal = 5 });
-            handler.Add(new AktieHandel() { Navn = "Aktie4", HandelsPris = 566, Antal = 2 });
+            Add(new AktieHandel() { Navn = "Aktie1", HandelsPris=5, Antal = 1 });
+            Add(new AktieHandel() { Navn = "Aktie2", HandelsPris = 4.7, Antal = 3 });
+            Add(new AktieHandel() { Navn = "Aktie3", HandelsPris = 1, Antal = 5 });
+            Add(new AktieHandel() { Navn = "Aktie4", HandelsPris = 566, Antal = 2 });
         }
 
         public AktieHandel Add(AktieHandel nyAktie)
