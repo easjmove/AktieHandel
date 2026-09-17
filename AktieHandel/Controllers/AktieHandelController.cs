@@ -48,10 +48,21 @@ namespace AktieHandelApi.Controllers
         }
 
         // POST api/<AktieHandelController>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public AktieHandel Post([FromBody] AktieHandel value)
+        public ActionResult<AktieHandel> Post([FromBody] AktieHandelDTO value)
         {
-            return _repository.Add(value);
+            try
+            {
+                AktieHandel newAktie = AktieHandelDTOHelper.ToClass(value);
+                newAktie = _repository.Add(newAktie);
+                //return CreatedAtAction(nameof(GetById), new { id = newAktie.Id }, newAktie);
+                return Created($"/api/AktieHandel/{newAktie.Id}", newAktie);
+            } catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<AktieHandelController>/5
