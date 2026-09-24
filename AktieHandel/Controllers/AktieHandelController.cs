@@ -20,14 +20,16 @@ namespace AktieHandelApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public ActionResult<IEnumerable<AktieHandel>> GetAll()
+        public ActionResult<IEnumerable<AktieHandel>> GetAll([FromQuery] string? navn = null,
+            [FromQuery] double? maxPris = null,
+            [FromQuery] int? maxAntal = null)
         {
-            List<AktieHandel> aktieHandler = _repository.GetAll();
-            if (aktieHandler == null || aktieHandler.Count == 0)
+            IEnumerable<AktieHandel> aktieHandler = _repository.GetAll(navn, maxPris, maxAntal);
+            if (aktieHandler == null || aktieHandler.Count() == 0)
             {
                 return NotFound();
             }
-            return Ok(_repository.GetAll());
+            return Ok(aktieHandler);
         }
 
         // GET api/<AktieHandelController>/5
@@ -59,7 +61,8 @@ namespace AktieHandelApi.Controllers
                 newAktie = _repository.Add(newAktie);
                 //return CreatedAtAction(nameof(GetById), new { id = newAktie.Id }, newAktie);
                 return Created($"/api/AktieHandel/{newAktie.Id}", newAktie);
-            } catch (ArgumentException ex)
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }

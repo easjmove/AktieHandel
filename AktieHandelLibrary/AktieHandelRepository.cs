@@ -24,9 +24,23 @@ namespace AktieHandelLibrary
             return nyAktie;
         }
 
-        public List<AktieHandel> GetAll()
+        public IEnumerable<AktieHandel> GetAll(string? navn = null, 
+            double? maxPris = null, int? maxAntal = null)
         {
-            return new List<AktieHandel>(handler);
+            IEnumerable<AktieHandel> result = handler.AsQueryable();
+            if (!string.IsNullOrEmpty(navn))
+            {
+                result = result.Where(x => x.Navn.Contains(navn, StringComparison.OrdinalIgnoreCase));
+            }
+            if (maxPris.HasValue)
+            {
+                result = result.Where(x => x.HandelsPris <= maxPris.Value);
+            }
+            if (maxAntal.HasValue)
+            {
+                result = result.Where(x => x.Antal <= maxAntal.Value);
+            }
+            return result;
         }
 
         public AktieHandel? GetById(int id)
