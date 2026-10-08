@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="AktieHandel/AktieHandel.csproj" />
   <Project Path="AktieHandelLibrary/AktieHandelLibrary.csproj" />
+  <Project Path="AktieHandelTests/AktieHandelTests.csproj" Id="4ccdb1be-ff56-48ca-8c58-bdff9f2da383" />
 </Solution>
