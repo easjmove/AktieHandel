@@ -1,4 +1,7 @@
 ﻿using AktieHandelLibrary;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,26 +21,43 @@ namespace AktieHandelApi.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
-        public ActionResult<IEnumerable<AktieHandel>> GetAll([FromQuery] string? navn = null,
+        public ActionResult<IEnumerable<AktieHandel>> GetAll(
+            [FromQuery] string? navn = null,
             [FromQuery] double? maxPris = null,
-            [FromQuery] int? maxAntal = null)
+            [FromQuery] int? maxAntal = null,
+            [FromQuery] string? sorterEfter = null,
+            [FromQuery] bool? sorterStigende = false)
         {
-            IEnumerable<AktieHandel> aktieHandler = _repository.GetAll(navn, maxPris, maxAntal);
-            if (aktieHandler == null || aktieHandler.Count() == 0)
+            try
             {
-                return NotFound();
+                IEnumerable<AktieHandel> aktieHandler = _repository.GetAll
+                               (navn, maxPris, maxAntal, sorterEfter, sorterStigende);
+                if (aktieHandler == null || aktieHandler.Count() == 0)
+                {
+                    return NotFound();
+                }
+                return Ok(aktieHandler);
             }
-            return Ok(aktieHandler);
+            catch (ArgumentException ex)
+            {
+                
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<AktieHandelController>/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<AktieHandel> GetById(int id)
+        public ActionResult<AktieHandel> GetById([FromRoute] int id)
         {
+            if (User.IsInRole(Role.admin.ToString()))
+            {
+                return BadRequest("Du har for mange rettigheder!");
+            }
             AktieHandel? aktieHandel = _repository.GetById(id);
             if (aktieHandel == null)
             {
@@ -50,6 +70,7 @@ namespace AktieHandelApi.Controllers
         }
 
         // POST api/<AktieHandelController>
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
@@ -69,6 +90,7 @@ namespace AktieHandelApi.Controllers
         }
 
         // PUT api/<AktieHandelController>/5
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public AktieHandel? Put(int id, [FromBody] AktieHandel value)
         {

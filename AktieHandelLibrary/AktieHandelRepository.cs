@@ -4,14 +4,14 @@ using System.Text;
 
 namespace AktieHandelLibrary
 {
-    public class AktieHandelRepository
+    public class AktieHandelRepository : IAktieHandelRepository
     {
         private int _nextId = 1;
-        private List<AktieHandel> handler = new List<AktieHandel>();        
+        private List<AktieHandel> handler = new List<AktieHandel>();
 
         public AktieHandelRepository()
         {
-            Add(new AktieHandel() { Navn = "Aktie1", HandelsPris=5, Antal = 1 });
+            Add(new AktieHandel() { Navn = "Aktie1", HandelsPris = 5, Antal = 1 });
             Add(new AktieHandel() { Navn = "Aktie2", HandelsPris = 4.7, Antal = 3 });
             Add(new AktieHandel() { Navn = "Aktie3", HandelsPris = 1, Antal = 5 });
             Add(new AktieHandel() { Navn = "Aktie4", HandelsPris = 566, Antal = 2 });
@@ -24,8 +24,10 @@ namespace AktieHandelLibrary
             return nyAktie;
         }
 
-        public IEnumerable<AktieHandel> GetAll(string? navn = null, 
-            double? maxPris = null, int? maxAntal = null)
+        public IEnumerable<AktieHandel> GetAll(string? navn = null,
+            double? maxPris = null, int? maxAntal = null,
+            string? sorterEfter = null,
+            bool? sorterStigende = false)
         {
             IEnumerable<AktieHandel> result = handler.AsQueryable();
             if (!string.IsNullOrEmpty(navn))
@@ -39,6 +41,17 @@ namespace AktieHandelLibrary
             if (maxAntal.HasValue)
             {
                 result = result.Where(x => x.Antal <= maxAntal.Value);
+            }
+
+            if (sorterEfter != null)
+            {
+                //result = sorterEfter.ToLower() switch
+                //{
+                //    "navn" => sorterStigende ? result.OrderBy(x => x.Navn) : result.OrderByDescending(x => x.Navn),
+                //    "handelspris" => sorterStigende ? result.OrderBy(x => x.HandelsPris) : result.OrderByDescending(x => x.HandelsPris),
+                //    "antal" => sorterStigende ? result.OrderBy(x => x.Antal) : result.OrderByDescending(x => x.Antal),
+                //    _ => throw new ArgumentException($"Ugyldigt sorteringsfelt: {sorterEfter}"),
+                //};
             }
             return result;
         }
